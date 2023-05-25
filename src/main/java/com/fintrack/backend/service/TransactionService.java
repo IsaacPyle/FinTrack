@@ -7,6 +7,6 @@ import java.util.Optional;
 public class TransactionService {
 
     public Optional<Transaction> getTransactionById(String transactionId) {
-        return Optional.of(new Transaction());
+        return Optional.of(Transaction.builder().build());
     }
 }

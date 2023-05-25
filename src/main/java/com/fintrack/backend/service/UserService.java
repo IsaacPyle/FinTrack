@@ -11,6 +11,6 @@ import java.util.Optional;
 public class UserService {
 
     public Optional<User> getUserById(String userId) {
-        return Optional.of(new User());
+        return Optional.of(User.builder().build());
     }
 }
