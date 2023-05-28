@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -13,15 +14,17 @@ public class BudgetService {
 
     private BudgetRepository budgetRepository;
 
-    public Optional<Budget> getBudgetById(String budgetId) {
+    public Optional<Budget> getBudgetById(UUID budgetId) {
         return budgetRepository.findById(budgetId);
     }
 
-    public Budget putBudget(Budget budget) {
+    public Budget createBudget() {
+        Budget budget = Budget.builder().build();
+
         return budgetRepository.save(budget);
     }
 
-    public void deleteBudget(String budgetId) {
+    public void deleteBudget(UUID budgetId) {
         budgetRepository.deleteById(budgetId);
     }
 }

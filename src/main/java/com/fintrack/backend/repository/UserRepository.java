@@ -1,4 +1,8 @@
 package com.fintrack.backend.repository;
 
-public class UserRepository {
-}
+import com.fintrack.backend.model.user.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface UserRepository extends JpaRepository<User, UUID> {}
