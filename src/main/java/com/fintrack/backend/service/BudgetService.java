@@ -11,9 +11,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BudgetService {
 
-    private final BudgetRepository budgetRepository;
+    private BudgetRepository budgetRepository;
 
     public Optional<Budget> getBudgetById(String budgetId) {
-        return Optional.ofNullable(budgetRepository.getBudgetById(budgetId));
+        return budgetRepository.findById(budgetId);
+    }
+
+    public Budget putBudget(Budget budget) {
+        return budgetRepository.save(budget);
+    }
+
+    public void deleteBudget(String budgetId) {
+        budgetRepository.deleteById(budgetId);
     }
 }
