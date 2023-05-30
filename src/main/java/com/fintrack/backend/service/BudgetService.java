@@ -2,6 +2,7 @@ package com.fintrack.backend.service;
 
 import com.fintrack.backend.model.budget.Budget;
 import com.fintrack.backend.repository.BudgetRepository;
+import com.fintrack.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,15 +13,25 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BudgetService {
 
-    private BudgetRepository budgetRepository;
+    private final BudgetRepository budgetRepository;
+    private final UserRepository userRepository;
 
-    public Optional<Budget> getBudgetById(UUID budgetId) {
+    public Optional<Budget> getBudgetByBudgetId(UUID budgetId) {
         return budgetRepository.findById(budgetId);
     }
 
-    public Budget createBudget() {
+    public Optional<Budget> getBudgetByUserId(UUID userId) {
+        return userRepository.findById(userId)
+            .flatMap(user -> budgetRepository.findById(user.getBudgetId()));
+    }
+
+    public Budget createNewBudget() {
         Budget budget = Budget.builder().build();
 
+        return putBudget(budget);
+    }
+
+    public Budget putBudget(Budget budget) {
         return budgetRepository.save(budget);
     }
 

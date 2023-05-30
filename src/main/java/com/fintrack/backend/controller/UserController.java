@@ -7,6 +7,7 @@ import com.fintrack.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +34,7 @@ public class UserController {
     public ResponseEntity<Budget> createBudgetForUser(@PathVariable("userId") UUID userId) {
         return userService.getUserById(userId)
             .map(user -> {
-                Budget budget = budgetService.createBudget();
+                Budget budget = budgetService.createNewBudget();
                 user.setBudgetId(budget.getBudgetId());
                 userService.setBudgetIdForUser(userId, budget.getBudgetId());
                 return ResponseEntity.status(HttpStatus.CREATED).body(budget);
@@ -43,7 +44,17 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<User> getUserById(@PathVariable("userId") UUID userId) {
-        return userService.getUserById(userId).map(ResponseEntity::ok)
+        return userService.getUserById(userId)
+            .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<?> deleteBudgetForUser(@PathVariable("userId") UUID userId) {
+        userService.getUserById(userId)
+            .map(User::getBudgetId)
+            .ifPresent(budgetService::deleteBudget);
+
+        return ResponseEntity.noContent().build();
     }
 }

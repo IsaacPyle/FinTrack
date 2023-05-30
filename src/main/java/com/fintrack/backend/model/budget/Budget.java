@@ -1,7 +1,6 @@
 package com.fintrack.backend.model.budget;
 
 import com.fintrack.backend.model.category.Category;
-import com.fintrack.backend.model.transaction.Transaction;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,8 +33,8 @@ public class Budget {
     @GeneratedValue(strategy = GenerationType.UUID)
     UUID budgetId;
 
-    @Column(name="transactions")
-    List<Transaction> transactions;
+    @Column(name="transactionIds")
+    List<UUID> transactionIds;
 
     @Column(name="targetDate")
     Date targetDate;
