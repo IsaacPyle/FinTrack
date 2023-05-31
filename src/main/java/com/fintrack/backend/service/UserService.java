@@ -19,7 +19,7 @@ public class UserService {
         return userRepository.findById(userId);
     }
 
-    public User createUserById() {
+    public User createUser() {
         User newUser = User.builder()
             .userId(UUID.randomUUID())
             .build();
@@ -33,5 +33,9 @@ public class UserService {
         }, () -> {
             throw new NoSuchElementException(String.format("User with userId %s not found", userId));
         });
+    }
+
+    public void deleteUserById(UUID userId) {
+        userRepository.deleteById(userId);
     }
 }
