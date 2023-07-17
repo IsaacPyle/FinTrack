@@ -1,11 +1,11 @@
 package com.fintrack.backend.controller;
 
 import com.fintrack.backend.model.budget.Budget;
-import com.fintrack.backend.model.user.User;
 import com.fintrack.backend.service.BudgetService;
 import com.fintrack.backend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,6 +23,7 @@ import java.util.UUID;
 @RequestMapping("/budgets")
 @RequiredArgsConstructor
 @Validated
+@Slf4j
 public class BudgetController {
 
     private final BudgetService budgetService;
@@ -35,10 +36,11 @@ public class BudgetController {
 
     @PostMapping("/{userId}")
     public ResponseEntity<Budget> createBudgetForUser(@PathVariable("userId") UUID userId) {
+        log.info("Creating budget for user with ID {}", userId);
         return userService.getUserById(userId)
             .map(user -> {
                 Budget budget = budgetService.createNewBudget();
-                user.setBudgetId(budget.getBudgetId());
+                log.info("New budget created with ID {}", budget.getBudgetId());
                 userService.setBudgetIdForUser(userId, budget.getBudgetId());
                 return ResponseEntity.status(HttpStatus.CREATED).body(budget);
             })

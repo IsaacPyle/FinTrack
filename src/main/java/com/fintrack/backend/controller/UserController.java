@@ -1,6 +1,5 @@
 package com.fintrack.backend.controller;
 
-import com.fintrack.backend.model.budget.Budget;
 import com.fintrack.backend.model.user.User;
 import com.fintrack.backend.service.BudgetService;
 import com.fintrack.backend.service.UserService;
@@ -48,4 +47,6 @@ public class UserController {
 
         return ResponseEntity.noContent().build();
     }
+
+
 }

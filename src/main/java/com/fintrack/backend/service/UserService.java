@@ -3,6 +3,7 @@ package com.fintrack.backend.service;
 import com.fintrack.backend.model.user.User;
 import com.fintrack.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -28,7 +30,9 @@ public class UserService {
 
     public void setBudgetIdForUser(UUID userId, UUID budgetId) {
         getUserById(userId).ifPresentOrElse(user -> {
+            log.info("Adding budgetID {} to user with ID {}", budgetId, userId);
             user.setBudgetId(budgetId);
+            log.info("User: {}", user);
             userRepository.save(user);
         }, () -> {
             throw new NoSuchElementException(String.format("User with userId %s not found", userId));
