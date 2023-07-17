@@ -32,7 +32,6 @@ public class UserService {
         getUserById(userId).ifPresentOrElse(user -> {
             log.info("Adding budgetID {} to user with ID {}", budgetId, userId);
             user.setBudgetId(budgetId);
-            log.info("User: {}", user);
             userRepository.save(user);
         }, () -> {
             throw new NoSuchElementException(String.format("User with userId %s not found", userId));

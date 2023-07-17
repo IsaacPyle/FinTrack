@@ -40,7 +40,6 @@ public class BudgetController {
         return userService.getUserById(userId)
             .map(user -> {
                 Budget budget = budgetService.createNewBudget();
-                log.info("New budget created with ID {}", budget.getBudgetId());
                 userService.setBudgetIdForUser(userId, budget.getBudgetId());
                 return ResponseEntity.status(HttpStatus.CREATED).body(budget);
             })
