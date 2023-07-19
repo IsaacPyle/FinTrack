@@ -50,5 +50,5 @@ public class Transaction {
 
     @Column(name = "categoryId")
     @NotBlank
-    String categoryId;
+    UUID categoryId;
 }

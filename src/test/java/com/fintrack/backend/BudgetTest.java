@@ -51,7 +51,7 @@ class BudgetTest extends BaseTest {
     }
 
     @Test
-    void canCreateAndGetBudget() {
+    void canGetBudget() {
         given()
             .pathParam("userId", user.getUserId())
         .when()

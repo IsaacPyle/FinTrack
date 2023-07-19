@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,11 +32,13 @@ public class Category {
     UUID categoryId;
 
     @Column(name = "name")
+    @NotBlank
     String name;
 
     @Column(name = "description")
     String description;
 
     @Column(name = "amount")
+    @Min(value = 0, message = "Amount must not be negative!")
     int amount;
 }
