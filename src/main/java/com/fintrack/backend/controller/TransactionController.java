@@ -30,7 +30,7 @@ public class TransactionController {
 
     @PostMapping("/{userId}")
     public ResponseEntity<Transaction> createTransaction(@PathVariable("userId") UUID userId,
-                                                         @Valid @RequestBody Transaction transaction) {
+                                                         @RequestBody Transaction transaction) {
         log.info("Creating transaction with ID {} for user with ID {}", transaction.getTransactionId(), userId);
         budgetService.getBudgetByUserId(userId).ifPresentOrElse(budget -> {
                 List<UUID> transactions = budget.getTransactionIds();

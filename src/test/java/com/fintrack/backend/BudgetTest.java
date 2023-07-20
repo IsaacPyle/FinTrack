@@ -21,22 +21,22 @@ class BudgetTest extends BaseTest {
     @BeforeEach
     void setup() {
         user = when()
-            .post("/users")
+                .post("/users")
             .then()
-            .statusCode(HttpStatus.CREATED.value())
-            .extract()
-            .body()
-            .as(User.class);
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .body()
+                .as(User.class);
 
         budget = given()
-            .pathParam("userId", user.getUserId())
+                .pathParam("userId", user.getUserId())
             .when()
-            .post("/budgets/{userId}")
+                .post("/budgets/{userId}")
             .then()
-            .statusCode(HttpStatus.CREATED.value())
-            .extract()
-            .body()
-            .as(Budget.class);
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .body()
+                .as(Budget.class);
     }
 
     // Just to make sure resources deleted from the db after the test
@@ -44,9 +44,9 @@ class BudgetTest extends BaseTest {
     void tearDown() {
         given()
             .pathParam("userId", user.getUserId())
-            .when()
+        .when()
             .delete("/users/{userId}")
-            .then()
+        .then()
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
@@ -58,7 +58,6 @@ class BudgetTest extends BaseTest {
             .get("/users/{userId}")
         .then()
             .statusCode(HttpStatus.OK.value())
-            .log().all()
             .body("userId", equalTo(user.getUserId().toString()))
             .body("budgetId", equalTo(budget.getBudgetId().toString()));
     }
@@ -77,16 +76,16 @@ class BudgetTest extends BaseTest {
 
         given()
             .pathParam("userId", user.getUserId())
-            .when()
+        .when()
             .delete("/users/{userId}")
-            .then()
+        .then()
             .statusCode(HttpStatus.NO_CONTENT.value());
 
         given()
             .pathParam("budgetId", budgetId)
-            .when()
+        .when()
             .get("/budgets/{budgetId}")
-            .then()
+        .then()
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 }

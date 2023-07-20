@@ -16,12 +16,12 @@ class UserTest extends BaseTest {
     @BeforeEach
     void setup() {
         user = when()
-            .post("/users")
+                .post("/users")
             .then()
-            .statusCode(HttpStatus.CREATED.value())
-            .extract()
-            .body()
-            .as(User.class);
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
+                .body()
+                .as(User.class);
     }
 
     // Just to make sure the user gets deleted from the db after the test
@@ -29,9 +29,9 @@ class UserTest extends BaseTest {
     void tearDown() {
         given()
             .pathParam("userId", user.getUserId())
-            .when()
+        .when()
             .delete("/users/{userId}")
-            .then()
+        .then()
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
@@ -39,9 +39,9 @@ class UserTest extends BaseTest {
     void canCreateAndGetUser() {
         given()
             .pathParam("userId", user.getUserId())
-            .when()
+        .when()
             .get("/users/{userId}")
-            .then()
+        .then()
             .statusCode(HttpStatus.OK.value())
             .body("userId", equalTo(user.getUserId().toString()));
     }
@@ -50,24 +50,24 @@ class UserTest extends BaseTest {
     void canDeleteUser() {
         given()
             .pathParam("userId", user.getUserId())
-            .when()
+        .when()
             .get("/users/{userId}")
-            .then()
+        .then()
             .statusCode(HttpStatus.OK.value())
             .body("userId", equalTo(user.getUserId().toString()));
 
         given()
             .pathParam("userId", user.getUserId())
-            .when()
+        .when()
             .delete("/users/{userId}")
-            .then()
+        .then()
             .statusCode(HttpStatus.NO_CONTENT.value());
 
         given()
             .pathParam("userId", user.getUserId())
-            .when()
+        .when()
             .get("/users/{userId}")
-            .then()
+        .then()
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
@@ -75,16 +75,16 @@ class UserTest extends BaseTest {
     void canCreateBudgetForUser() {
         given()
             .pathParam("userId", user.getUserId())
-            .when()
+        .when()
             .delete("/users/{userId}")
-            .then()
+        .then()
             .statusCode(HttpStatus.NO_CONTENT.value());
 
         given()
             .pathParam("userId", user.getUserId())
-            .when()
+        .when()
             .get("/users/{userId}")
-            .then()
+        .then()
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 }
