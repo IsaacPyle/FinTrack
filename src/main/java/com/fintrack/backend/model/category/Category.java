@@ -22,7 +22,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @Entity
-@Table(name = "budgetTable")
+@Table(name = "categoryTable")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Category {

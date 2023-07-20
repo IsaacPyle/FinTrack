@@ -42,13 +42,12 @@ public class Transaction {
     Date transactionDate;
 
     @Column(name = "type")
-    @NotBlank
-    TransactionType type;
+    TransactionType type = TransactionType.PURCHASE;
 
     @Column(name = "description")
     String description;
 
     @Column(name = "categoryId")
     @NotBlank
-    UUID categoryId;
+    String categoryId;
 }
