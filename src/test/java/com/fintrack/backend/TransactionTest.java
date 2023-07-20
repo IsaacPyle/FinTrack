@@ -59,7 +59,6 @@ public class TransactionTest extends BaseTest {
             .build();
 
         given()
-            .contentType(ContentType.APPLICATION_JSON.getMimeType())
             .body(transaction)
             .pathParam("userId", user.getUserId())
         .when()
