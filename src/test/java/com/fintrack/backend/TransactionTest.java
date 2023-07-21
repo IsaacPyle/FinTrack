@@ -17,13 +17,12 @@ import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.equalTo;
 
-public class TransactionTest extends BaseTest {
+class TransactionTest extends BaseTest {
 
     private User user;
-
     private Budget budget;
 
     @BeforeEach
@@ -49,9 +48,13 @@ public class TransactionTest extends BaseTest {
 
     @Test
     void canCreateTransaction() {
-        Category category = Category.builder().categoryId(UUID.randomUUID()).name("Grocery").build();
+        Category category = Category.builder()
+            .categoryId(UUID.randomUUID())
+            .name("Grocery")
+            .build();
 
         Transaction transaction = Transaction.builder()
+            .transactionId(UUID.randomUUID())
             .categoryId(category.getCategoryId().toString())
             .amount(BigDecimal.valueOf(69))
             .transactionDate(Date.from(Instant.now()))
@@ -59,8 +62,18 @@ public class TransactionTest extends BaseTest {
             .build();
 
         given()
+            .pathParam("budgetId", budget.getBudgetId())
+        .when()
+            .get("/budgets/{budgetId}")
+        .then()
+            .statusCode(HttpStatus.OK.value())
+            .body("budgetId", equalTo(budget.getBudgetId().toString()))
+            .body("transactionIds", nullValue());
+
+        given()
             .body(transaction)
             .pathParam("userId", user.getUserId())
+            .contentType(ContentType.APPLICATION_JSON.getMimeType())
         .when()
             .post("/transactions/{userId}")
         .then()
@@ -70,13 +83,12 @@ public class TransactionTest extends BaseTest {
             .as(Transaction.class);
 
         given()
-            .pathParam("userId", user.getUserId())
+            .pathParam("budgetId", budget.getBudgetId())
         .when()
-            .get("/users/{userId}")
+            .get("/budgets/{budgetId}")
         .then()
             .statusCode(HttpStatus.OK.value())
-            .body("userId", equalTo(user.getUserId().toString()))
             .body("budgetId", equalTo(budget.getBudgetId().toString()))
-            .body("transactionIds", notNullValue());
+            .body("transactionIds[0]", equalTo(transaction.getTransactionId().toString()));
     }
 }

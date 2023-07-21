@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,12 +34,12 @@ public class Transaction {
     UUID transactionId;
 
     @Column(name = "amount")
-    @NotBlank
+    @NotNull
     @Min(value = 0, message = "Transaction amount must not be negative!")
     BigDecimal amount;
 
     @Column(name = "transactionDate")
-    @NotBlank
+    @NotNull
     Date transactionDate;
 
     @Column(name = "type")
