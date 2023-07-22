@@ -5,7 +5,6 @@ import com.fintrack.backend.model.category.Category;
 import com.fintrack.backend.model.transaction.TransactionType;
 import com.fintrack.backend.model.user.User;
 import com.fintrack.backend.model.transaction.Transaction;
-import com.fintrack.backend.service.TransactionService;
 import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
