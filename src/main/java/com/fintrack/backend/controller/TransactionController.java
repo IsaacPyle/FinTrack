@@ -57,6 +57,7 @@ public class TransactionController {
     @DeleteMapping("/{userId}/{transactionId}")
     public ResponseEntity<?> deleteTransaction(@PathVariable("userId") UUID userId,
                                                @PathVariable("transactionId") UUID transactionId) {
+        log.info("Deleting transaction with ID {} for user with ID {}", transactionId, userId);
         budgetService.getBudgetByUserId(userId).ifPresent(budget -> {
             List<UUID> transactionIds = budget.getTransactionIds();
             if (transactionIds.remove(transactionId)) {
