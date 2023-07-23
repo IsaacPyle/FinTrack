@@ -58,17 +58,10 @@ public class TransactionController {
     public ResponseEntity<?> deleteTransaction(@PathVariable("userId") UUID userId,
                                                @PathVariable("transactionId") UUID transactionId) {
         log.info("Deleting transaction with ID {} for user with ID {}", transactionId, userId);
-        budgetService.getBudgetByUserId(userId).ifPresent(budget -> {
-            List<UUID> transactionIds = budget.getTransactionIds();
-            if (transactionIds.remove(transactionId)) {
-                budget.setTransactionIds(transactionIds);
-                budgetService.putBudget(budget);
-            }
-        });
+        budgetService.getBudgetByUserId(userId).ifPresent(budget ->
+            transactionService.removeTransactionForBudget(budget, transactionId));
 
         transactionService.getTransactionById(transactionId)
-            .map(Transaction::getTransactionId)
-            .flatMap(transactionService::getTransactionById)
             .map(Transaction::getTransactionId)
             .ifPresent(transactionService::deleteTransactionById);
 
