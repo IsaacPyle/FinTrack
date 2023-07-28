@@ -34,33 +34,42 @@ public class TransactionController {
     @PostMapping("/{userId}")
     public ResponseEntity<Transaction> createTransaction(@PathVariable("userId") UUID userId,
                                                          @RequestBody Transaction transaction) {
-        log.info("Creating transaction with ID {} for user with ID {}", transaction.getTransactionId(), userId);
+        log.info("Creating transaction for user with ID {}", userId);
+        Transaction createdTransaction = transactionService.createTransaction(transaction);
         budgetService.getBudgetByUserId(userId).ifPresentOrElse(budget -> {
                 List<UUID> transactions = Optional.ofNullable(budget.getTransactionIds()).orElse(new ArrayList<>());
-                transactions.add(transaction.getTransactionId());
+                transactions.add(createdTransaction.getTransactionId());
                 budget.setTransactionIds(transactions);
                 budgetService.putBudget(budget);
             }, () -> {
+                deleteTransactionById(createdTransaction.getTransactionId());
                 throw new IllegalArgumentException(String.format("No user with id %s found to add transaction to.", userId));
             });
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(transactionService.createTransaction(transaction));
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
     }
 
     @GetMapping("/{transactionId}")
     public ResponseEntity<Transaction> getTransaction(@PathVariable("transactionId") UUID transactionId) {
+        log.info("Getting transaction with ID {}", transactionId);
         return transactionService.getTransactionById(transactionId)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{userId}/{transactionId}")
-    public ResponseEntity<?> deleteTransaction(@PathVariable("userId") UUID userId,
+    public ResponseEntity<?> deleteTransactionForUser(@PathVariable("userId") UUID userId,
                                                @PathVariable("transactionId") UUID transactionId) {
         log.info("Deleting transaction with ID {} for user with ID {}", transactionId, userId);
         budgetService.getBudgetByUserId(userId).ifPresent(budget ->
             transactionService.removeTransactionForBudget(budget, transactionId));
 
+        return deleteTransactionById(transactionId);
+    }
+
+    @DeleteMapping("/{transactionId}")
+    public ResponseEntity<?> deleteTransactionById(@PathVariable("transactionId") UUID transactionId) {
+        log.info("Deleting transaction with ID {}", transactionId);
         transactionService.getTransactionById(transactionId)
             .map(Transaction::getTransactionId)
             .ifPresent(transactionService::deleteTransactionById);

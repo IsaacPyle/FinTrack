@@ -29,9 +29,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Transaction {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    UUID transactionId = UUID.randomUUID();
+    UUID transactionId;
 
     @Column(name = "amount")
     @NotNull

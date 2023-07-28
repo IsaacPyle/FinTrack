@@ -54,7 +54,6 @@ class TransactionTest extends BaseTest {
             .build();
 
         transaction = Transaction.builder()
-            .transactionId(UUID.randomUUID())
             .categoryId(category.getCategoryId().toString())
             .amount(BigDecimal.valueOf(69))
             .transactionDate(Date.from(Instant.now()))
@@ -93,14 +92,17 @@ class TransactionTest extends BaseTest {
             .body("budgetId", equalTo(budget.getBudgetId().toString()))
             .body("transactionIds", nullValue());
 
-        given()
+        transaction = given()
             .body(transaction)
             .pathParam("userId", user.getUserId())
             .contentType(ContentType.APPLICATION_JSON.getMimeType())
         .when()
             .post("/transactions/{userId}")
         .then()
-            .statusCode(HttpStatus.CREATED.value());
+            .statusCode(HttpStatus.CREATED.value())
+            .extract()
+            .body()
+            .as(Transaction.class);
 
         given()
             .pathParam("budgetId", budget.getBudgetId())
@@ -114,14 +116,7 @@ class TransactionTest extends BaseTest {
 
     @Test
     void canGetTransactionById() {
-        given()
-            .pathParam("transactionId", transaction.getTransactionId())
-        .when()
-            .get("/transaction/{transactionId}")
-        .then()
-            .statusCode(HttpStatus.NOT_FOUND.value());
-
-        Transaction createdTransaction = given()
+        transaction = given()
             .body(transaction)
             .pathParam("userId", user.getUserId())
             .contentType(ContentType.APPLICATION_JSON.getMimeType())
@@ -129,17 +124,32 @@ class TransactionTest extends BaseTest {
             .post("/transactions/{userId}")
         .then()
             .statusCode(HttpStatus.CREATED.value())
+            .log().all()
             .extract()
             .body()
             .as(Transaction.class);
 
         given()
-            .pathParam("transactionId", createdTransaction.getTransactionId())
+            .pathParam("transactionId", transaction.getTransactionId())
         .when()
             .get("/transactions/{transactionId}")
         .then()
             .statusCode(HttpStatus.OK.value())
-            .body("transactionId", equalTo(createdTransaction.getTransactionId().toString()))
-            .body("categoryId", equalTo(createdTransaction.getCategoryId()));
+            .body("transactionId", equalTo(transaction.getTransactionId().toString()))
+            .body("categoryId", equalTo(transaction.getCategoryId()));
+
+        given()
+            .pathParam("transactionId", transaction.getTransactionId())
+        .when()
+            .delete("/transactions/{transactionId}")
+        .then()
+            .statusCode(HttpStatus.NO_CONTENT.value());
+
+        given()
+            .pathParam("transactionId", transaction.getTransactionId())
+            .when()
+        .get("/transactions/{transactionId}")
+            .then()
+        .statusCode(HttpStatus.NOT_FOUND.value());
     }
 }

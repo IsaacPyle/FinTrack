@@ -24,8 +24,9 @@ public class TransactionService {
     }
 
     public Transaction createTransaction(Transaction transaction) {
-        log.info("Creating transaction in service with ID {}", transaction.getTransactionId());
-        return transactionRepository.save(transaction);
+        Transaction createdTransaction = transactionRepository.save(transaction);
+        log.info("Created transaction in service with ID {}", createdTransaction.getTransactionId());
+        return createdTransaction;
     }
 
     public void deleteTransactionById(UUID transactionId) {
