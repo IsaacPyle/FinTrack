@@ -4,6 +4,7 @@ import com.fintrack.backend.model.user.User;
 import com.fintrack.backend.service.BudgetService;
 import com.fintrack.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,11 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
+@Log4j2
 public class UserController {
 
     private final BudgetService budgetService;
@@ -28,6 +31,7 @@ public class UserController {
     public ResponseEntity<User> createUser() {
         User user = userService.createUser();
 
+        log.info("Created user with id: {}", user.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
@@ -44,7 +48,12 @@ public class UserController {
             .map(User::getBudgetId)
             .ifPresent(budgetService::deleteBudget);
         userService.deleteUserById(userId);
-
+        log.info("If found, deleted user with id: {}", userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<User>> getUsers() {
+        return ResponseEntity.ok(userService.getUsers());
     }
 }
