@@ -1,6 +1,7 @@
 package com.fintrack.backend.service;
 
 import com.fintrack.backend.model.budget.Budget;
+import com.fintrack.backend.model.category.Category;
 import com.fintrack.backend.model.transaction.Transaction;
 import com.fintrack.backend.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,22 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final BudgetService budgetService;
+    private final CategoryService categoryService;
 
     public Optional<Transaction> getTransactionById(UUID transactionId) {
+        log.info("Getting transaction with ID {}", transactionId);
         return transactionRepository.findById(transactionId);
     }
 
     public Transaction createTransaction(Transaction transaction) {
-        Transaction createdTransaction = transactionRepository.save(transaction);
+        log.info("Creating transaction with category {}", transaction.getCategoryName());
+        String categoryName = Optional.ofNullable(transaction.getCategoryName()).orElse("None");
+        Category category = categoryService.getCategoryByName(categoryName)
+            .orElse(categoryService.putCategory(categoryName));
+        Transaction newTransaction = transaction.toBuilder()
+            .categoryId(category.getCategoryId())
+            .build();
+        Transaction createdTransaction = transactionRepository.save(newTransaction);
         log.info("Created transaction in service with ID {}", createdTransaction.getTransactionId());
         return createdTransaction;
     }

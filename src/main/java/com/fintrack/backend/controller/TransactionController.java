@@ -36,6 +36,7 @@ public class TransactionController {
                                                          @RequestBody Transaction transaction) {
         log.info("Creating transaction for user with ID {}", userId);
         Transaction createdTransaction = transactionService.createTransaction(transaction);
+        log.info("Created transaction for user with ID {}", userId);
         budgetService.getBudgetByUserId(userId).ifPresentOrElse(budget -> {
                 List<UUID> transactions = Optional.ofNullable(budget.getTransactionIds()).orElse(new ArrayList<>());
                 transactions.add(createdTransaction.getTransactionId());
@@ -45,7 +46,7 @@ public class TransactionController {
                 deleteTransactionById(createdTransaction.getTransactionId());
                 throw new IllegalArgumentException(String.format("No user with id %s found to add transaction to.", userId));
             });
-
+        log.info("Inserted transaction into budget for user with ID {}", userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTransaction);
     }
 

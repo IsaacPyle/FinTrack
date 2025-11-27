@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @Setter
 @ToString
@@ -49,5 +49,8 @@ public class Transaction {
     String description;
 
     @Column(name = "categoryId")
-    String categoryId;
+    UUID categoryId;
+
+    @Column(name = "categoryName")
+    String categoryName = "None";
 }
